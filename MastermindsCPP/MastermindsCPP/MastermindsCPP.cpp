@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include<memory>
+#include <time.h>
 
 bool Contains(int number, int count, int* outputArray)
 {
@@ -18,14 +19,13 @@ bool Contains(int number, int count, int* outputArray)
 
 std::unique_ptr<int[]> RandomCreator()
 {
-	srand(time(NULL));
 	std::unique_ptr<int[]> outputArray = std::make_unique<int[]>(4);
-	for (size_t i = 0; i < 10; i++)
+	for (size_t i = 0; i < 4; i++)
 	{
 		int x{};
 		do {
 			x = rand() % 10;
-		} while (Contains(x, 10, outputArray.get()));
+		} while (Contains(x, 4, outputArray.get()));
 
 		outputArray[i] = x;
 	}
@@ -36,40 +36,52 @@ std::unique_ptr<int[]> RandomCreator()
 
 int main()
 {
-	//This is the array that stores the input recieved from the user. 4 Numbers
-	std::unique_ptr<int[]> inputArray = std::make_unique<int[]>(4);
-	//This is the array that contains the answer for the mastermind game.
-	std::unique_ptr<int[]> outputArray = std::make_unique<int[]>(4);
+	srand(time(NULL));
 
-	//This group performs the input recieval fromm the user. [1].
-	int count = 0; //[1]
-	do // [1]
+	int finishedCount = 0;
+	std::unique_ptr<int[]> outputArray = RandomCreator(); //This creates the answer key. [2]
+	int tries = 0;
+
+	do
 	{
-		std::cout << "Enter in a number between 0-9 \n"; //[1]
-		std::cin >> inputArray[count]; //[1]
-		count++; //[1]
-	} while (count < 4);
+		//This is the array that stores the input recieved from the user. 4 Numbers
+		std::unique_ptr<int[]> inputArray = std::make_unique<int[]>(4);
+		//This is the array that contains the answer for the mastermind game.
 
-	outputArray = RandomCreator(); //This creates the answer key. [2]
-
-	for (int i = 0; i < count; i++)
-	{
-		if (Contains(inputArray[i], count, outputArray.get()))
+		//This group performs the input recieval fromm the user. [1].
+		int count = 0; //[1]
+		do // [1]
 		{
-			if (inputArray[i] == outputArray[i])
+			std::cout << "Enter in a number between 0-9 \n"; //[1]
+			std::cin >> inputArray[count]; //[1]
+			count++; //[1]
+		} while (count < 4);
+
+		finishedCount = 0;
+
+		for (int i = 0; i < 4; i++)
+		{
+			if (Contains(inputArray.get()[i], count, outputArray.get()))
 			{
-				std::cout << "Correct: " << i << "\n";
+				if (inputArray.get()[i] == outputArray.get()[i])
+				{
+					std::cout << "Correct: " << inputArray.get()[i] << "\n";
+					finishedCount++;
+				}
+				else
+				{
+					std::cout << "Correct but wrong spot: " << inputArray.get()[i] << "\n";
+				}
 			}
 			else
 			{
-				std::cout << "Correct but wrong spot: " << i << "\n";
+				std::cout << "Incorrect: " << inputArray.get()[i] << "\n";
 			}
 		}
-		else
-		{
-			std::cout << "Incorrect: " << i << "\n";
-		}
-	}
+		tries++;
+	} while (finishedCount < 4);
+
+	std::cout << "Congratulations! You have won in " << tries << " tries.";
 	//Correct
 	//Correct but in wrong place
 	//Incorrect
