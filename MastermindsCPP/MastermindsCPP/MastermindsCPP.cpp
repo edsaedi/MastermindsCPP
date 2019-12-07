@@ -4,6 +4,9 @@
 #include <iostream>
 #include<memory>
 #include <time.h>
+#include <fstream>
+#include<vector>
+#include <string>
 
 bool Contains(int number, int count, int* outputArray)
 {
@@ -32,12 +35,40 @@ std::unique_ptr<int[]> RandomCreator()
 	return outputArray;
 }
 
+std::vector<std::string> SplitString(std::string input, char split)
+{
+	input += split;
+
+	std::vector<std::string> words;
+
+	std::string temp = "";
+	for (size_t i = 0; i < input.size(); i++)
+	{
+		if (input[i] != split)
+		{
+			temp += input[i];
+		}
+		else
+		{
+			words.push_back(temp);
+			temp = "";
+		}
+	}
+
+
+	return words;
+}
+
 
 
 int main()
 {
 	srand(time(NULL));
 
+	auto stuff = SplitString("this is a test", ' ');
+
+	;
+	/*
 	int finishedCount = 0;
 	std::unique_ptr<int[]> outputArray = RandomCreator(); //This creates the answer key. [2]
 	int tries = 0;
@@ -81,8 +112,44 @@ int main()
 		tries++;
 	} while (finishedCount < 4);
 
-	std::cout << "Congratulations! You have won in " << tries << " tries.";
+	std::cout << "Congratulations! You have won in " << tries << " tries. \n";
+
+	*/
+
+	int tries = 5;
+	std::ifstream file("HighScore");
+	std::string str;
+	std::string file_contents;
+
+	int ind = 0;
+	while (std::getline(file, str))
+	{
+		auto stuff = SplitString(str, ':');
+		int num = std::stoi(stuff[1]);
+		if (tries < num)
+		{
+			break;
+		}
+		file_contents += num;
+		file_contents.push_back('\n');
+		ind++;
+	}
+
+	std::ofstream HighScore;
+	HighScore.open("HighScore.txt", std::ios_base::app);
+
+
+	std::cout << "Enter in your name!";
+	std::string name;
+	/*std::cin >> name;*/
+	std::getline(std::cin, name);
+	HighScore << name << ":" << tries << "\n";
+	//figure out how to put the position at ind
+	HighScore.close();
+
 	//Correct
 	//Correct but in wrong place
 	//Incorrect
+
+	return 0;
 }
