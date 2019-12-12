@@ -7,6 +7,7 @@
 #include <fstream>
 #include<vector>
 #include <string>
+#include <sstream>
 
 bool Contains(int number, int count, int* outputArray)
 {
@@ -116,37 +117,87 @@ int main()
 
 	*/
 
-	int tries = 5;
-	std::ifstream file("HighScore");
-	std::string str;
-	std::string file_contents;
+	int tries = 4;
+	//std::ifstream file("HighScore");
+	//std::string str;
+	//std::string file_contents;
 
-	int ind = 0;
-	while (std::getline(file, str))
-	{
-		auto stuff = SplitString(str, ':');
-		int num = std::stoi(stuff[1]);
-		if (tries < num)
-		{
-			break;
-		}
-		file_contents += num;
-		file_contents.push_back('\n');
-		ind++;
-	}
+	//std::cout << "Enter in your name!";
+	//std::string name;
+	///*std::cin >> name;*/
+	//std::getline(std::cin, name);
 
-	std::ofstream HighScore;
-	HighScore.open("HighScore.txt", std::ios_base::app);
+	//std::ofstream HighScore;
+	//HighScore.open("HighScore.txt", std::ios_base::app);
 
+	//int ind = 0;
+	//while (std::getline(file, str))
+	//{
+	//	auto stuff = SplitString(str, ':');
+	//	int num = std::stoi(stuff[1]);
+	//	if (tries < num)
+	//	{
+	//		break;
+	//	}
+	//	file_contents += num;
+	//	file_contents.push_back('\n');
+	//	ind++;
+	//}
+
+
+
+	//HighScore << name << ":" << tries << "\n";
+	////figure out how to put the position at ind
+	//HighScore.close();
+
+
+	///
+	//Our goal is to take a file
+	//Add to it for every line we see as correct
+	//Place our high score in the right sport
+	//Release the information
 
 	std::cout << "Enter in your name!";
 	std::string name;
-	/*std::cin >> name;*/
 	std::getline(std::cin, name);
-	HighScore << name << ":" << tries << "\n";
-	//figure out how to put the position at ind
+
+	std::ifstream HighScore;
+	HighScore.open("HighScore.txt");
+
+	if (!HighScore)
+	{
+		std::cout << "Unable to open file";
+		exit(1);
+	}
+
+	std::string line;
+	std::vector<std::string> file;
+	for (int i = 0; std::getline(HighScore, line); i++)
+	{
+		auto stuff = SplitString(line, ':');
+		int num = std::stoi(stuff[1]);
+		if (tries < num)
+		{
+			std::ostringstream oss;
+			oss << name << ":" << tries;
+			std::string var = oss.str();
+			file.push_back(var);
+		}
+		file.push_back(line);
+		//If it is a highscore. Add
+	}
+
 	HighScore.close();
 
+	std::ofstream HighScoreOut;
+	HighScoreOut.open("HighScore.txt", std::ios_base::app);
+
+	/*for (size_t i = 0; i < file.capacity(); i++)
+	{
+		HighScoreOut << line << "\n";
+	}*/
+
+	HighScoreOut.close();
 	//Correct
 	//Correct but in wrong place
 	//Incorrect
